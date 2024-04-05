@@ -11,7 +11,7 @@ pipeline {
         DOCKER_USER = "mooa2023"
         DOCKER_PASS = "dockerhub"
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
-        IMAGE_TAG = "${REELASE}-{BUILD_NUMBER}"
+        IMAGE_TAG = "${REELASE}-${BUILD_NUMBER}"
     
     }
     
