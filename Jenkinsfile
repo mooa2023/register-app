@@ -50,6 +50,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Quality Gate"){
             steps {
                 script {
@@ -57,6 +58,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Build & Push Docker Image"){
             steps {
                 script {
@@ -68,6 +70,23 @@ pipeline {
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push('latest')
                     }
+                }
+            }
+        }
+        
+        stage("Trivy Scan"){
+            steps {
+               script {
+	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mooa2023/register-app-pipeline:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+               }
+           }
+        }
+
+        stage("CleanUp Artifacts"){
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
                 }
             }
         }
